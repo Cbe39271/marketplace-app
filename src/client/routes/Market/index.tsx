@@ -236,7 +236,7 @@ export const Market = () => {
       lender: '',
       line: '',
     };
-    dispatch(CreditLinesActions.addCredit({ ...params }));
+    dispatch(CreditLinesActions.addCredit({params: params }));
   };
 
   const depositHandler = (vaultAddress: string) => {

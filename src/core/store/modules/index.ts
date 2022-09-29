@@ -57,6 +57,9 @@ import { PartnerSelectors } from './partner/partner.selectors';
 import linesReducer, { linesInitialState } from './lines/lines.reducer';
 import { LinesActions } from './lines/lines.actions';
 import { LinesSelectors } from './lines/lines.selectors';
+import { CreditLinesActions } from './creditLines/creditLines.actions';
+import { CreditLinesSelectors } from './creditLines/creditLines.selectors';
+import { creditLinesInitialState } from './creditLines/creditLines.reducer';
 
 const rootReducer: Reducer<RootState> = combineReducers({
   app: appReducer,
@@ -91,6 +94,7 @@ export {
   // UserActions,
   PartnerActions,
   LinesActions,
+  CreditLinesActions,
 };
 
 // Selectors
@@ -108,6 +112,7 @@ export {
   // UserSelectors,
   PartnerSelectors,
   LinesSelectors,
+  CreditLinesSelectors,
 };
 
 // initialState
@@ -126,4 +131,5 @@ export {
   // userInitialState,
   partnerInitialState,
   linesInitialState,
+  creditLinesInitialState,
 };

@@ -23,7 +23,6 @@ export const useCreditLines = (
   const [creditLines, setCreditLines] = useState<{ [key: string]: CreditLine[] }>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [args, setArgs] = useState<UseCreditLinesParams>(params);
-  const { DEBT_DAO_SUBGRAPH_KEY } = getEnv();
 
   useEffect(() => {
     if (isEqual(params, args)) return;
@@ -35,7 +34,7 @@ export const useCreditLines = (
           console.log('get lines category res: ', key, response.data);
           return { [key]: response };
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log('err useCreditLines', err);
           return;
         });

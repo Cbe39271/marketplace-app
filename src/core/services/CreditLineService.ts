@@ -15,17 +15,14 @@ import {
   ExecuteTransactionProps,
   AddCreditProps,
   Credit,
-  Network,
   CreditLinePage,
-  GetLineProps,
-  GetLinesProps,
   GetLinePageProps,
   LineStatusTypes,
   UNINITIALIZED_STATUS,
   ACTIVE_STATUS,
   LIQUIDATABLE_STATUS,
   REPAID_STATUS,
-  INSOLVENT_STATUS,
+  INSOLVENT_STATUS, QueryResponse,
 } from '@types';
 import { getConfig } from '@config';
 import { LineOfCreditABI } from '@services/contracts';
@@ -42,12 +39,12 @@ export class CreditLineServiceImpl implements CreditLineService {
   private readonly contractAddress: Address;
 
   constructor({
-    transactionService,
-    yearnSdk,
-    web3Provider,
-    config,
-    contractAddress,
-  }: {
+                transactionService,
+                yearnSdk,
+                web3Provider,
+                config,
+                contractAddress,
+              }: {
     transactionService: TransactionService;
     web3Provider: Web3Provider;
     yearnSdk: YearnSdk;
@@ -70,7 +67,7 @@ export class CreditLineServiceImpl implements CreditLineService {
 
   public async getCreditLineById(id: Address): Promise<CreditLine | void> {
     return (await getLine({ id })
-      .then(queryResponse => <CreditLine>queryResponse.data))
+      .then((queryResponse: QueryResponse<CreditLine>) => <CreditLine>queryResponse.data))
   }
 
   public async addCredit(props: AddCreditProps, dryRun: boolean): Promise<TransactionResponse | PopulatedTransaction> {
@@ -105,7 +102,7 @@ export class CreditLineServiceImpl implements CreditLineService {
     return <TransactionResponse>await this.executeContractMethod('close', [id], false);
   }
 
-  public async withdraw(id: Bytes, amount: BigNumber): Promise<TransactionResponse> {
+  public async withdraw(id: BytesLike, amount: BigNumber): Promise<TransactionResponse> {
     return <TransactionResponse>await this.executeContractMethod('withdraw', [id, amount], false);
   }
 
@@ -214,17 +211,21 @@ export class CreditLineServiceImpl implements CreditLineService {
   }
 
   public async getLinePage(prop: GetLinePageProps): Promise<CreditLinePage> {
-    return {};
+    return Promise.resolve(<CreditLinePage>{});
   }
+
   public async getUserLinePositions(): Promise<any> {
     return null;
   }
+
   public async getExpectedTransactionOutcome(): Promise<any> {
     return null;
   }
+
   public async approveDeposit(): Promise<any> {
     return null;
   }
+
   // public async approveZapOu:  () => Promise<any>t: {
   //   return null;
   // };
@@ -234,12 +235,11 @@ export class CreditLineServiceImpl implements CreditLineService {
   public async deposit(): Promise<any> {
     return null;
   }
-  public async withdraw(): Promise<any> {
-    return null;
-  }
+
   public async getDepositAllowance(): Promise<any> {
     return null;
   }
+
   public async getWithdrawAllowance(): Promise<any> {
     return null;
   }

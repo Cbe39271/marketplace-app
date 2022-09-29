@@ -1,12 +1,9 @@
 import {
   BaseCreditLine,
   CreditLinePage,
-  BaseToken,
   Escrow,
   LinePageSpigot,
   LinePageCreditPosition,
-  DocumentNode,
-  QueryResponse,
 } from '@types';
 
 import { Address } from './Blockchain';
@@ -24,7 +21,7 @@ export interface QueryResponse<ResponseType> {
   [key: string]: any;
 }
 
-type QueryResponseTypes = BaseCreditLine | BaseCreditLine[] | CreditLinePage | CreditLine | undefined;
+type QueryResponseTypes = BaseCreditLine | BaseCreditLine[] | CreditLinePage | undefined;
 
 /**
  * @typedef {object} Query
@@ -84,11 +81,6 @@ export interface UseCreditLinesParams {
 export interface UseCreditLineParams {
   id: Address;
 }
-
-/*
-  Query Responses Types
-*/
-type QueryResponseTypes = BaseCreditLine | BaseCreditLine[] | CreditLinePage;
 
 export interface LineFrag {
   id: string;

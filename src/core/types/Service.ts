@@ -151,8 +151,6 @@ export interface InterestRateAccrueInterestProps {
 
 export interface CreditLineService {
   // getters
-  getLine: (props: GetLineProps) => Promise<CreditLine | undefined>;
-  getLines: (props: GetLinesProps) => Promise<CreditLine[] | undefined>;
   getLinePage: (props: GetLinePageProps) => Promise<CreditLinePage | undefined>;
   getUserLinePositions: (...args: any) => Promise<any | undefined>;
   getExpectedTransactionOutcome: (...args: any) => Promise<any | undefined>;
@@ -173,11 +171,10 @@ export interface CreditLineService {
     dryRun: boolean
   ) => Promise<TransactionResponse | PopulatedTransaction>;
   depositAndRepay: (
-    id: BytesLike,
     amount: BigNumber,
     dryRun: boolean
   ) => Promise<TransactionResponse | PopulatedTransaction>;
-  depositAndClose: (id: BytesLike, dryRun: boolean) => Promise<TransactionResponse | PopulatedTransaction>;
+  depositAndClose: (dryRun: boolean) => Promise<TransactionResponse | PopulatedTransaction>;
 
   // helpers
   getFirstID(): Promise<BytesLike>;
@@ -196,7 +193,6 @@ export interface CreditLineService {
   // approveZapOut: (...args: any) => Promise<any | undefined>;
   // signPermit: (...args: any) => Promise<any | undefined>;
   deposit: (...args: any) => Promise<any>;
-  withdraw: (...args: any) => Promise<any>;
   getDepositAllowance: (...args: any) => Promise<any | undefined>;
   getWithdrawAllowance: (...args: any) => Promise<any | undefined>;
 }

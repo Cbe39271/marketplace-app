@@ -109,6 +109,7 @@ const getUserLinePositions = createAsyncThunk<
   const userLinesPositions = await services.creditLineService.getUserLinePositions({
     network: network.current,
     userAddress,
+    lineAddresses,
   });
   return { userLinesPositions };
 });
