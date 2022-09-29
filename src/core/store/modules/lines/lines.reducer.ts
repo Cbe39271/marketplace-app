@@ -29,6 +29,7 @@ export const linesInitialState: CreditLineState = {
   selectedLineAddress: undefined,
   linesMap: {},
   user: {
+    activeLines: [], // TODO can remove and derive from linePositions.
     linePositions: {},
     lineAllowances: {},
   },
@@ -61,6 +62,7 @@ const {
   // getUserLinesMetadata,
   clearSelectedLineAndStatus,
   clearLineStatus,
+  getLCreditLineById
 } = LinesActions;
 
 const linesReducer = createReducer(linesInitialState, (builder) => {
@@ -80,6 +82,7 @@ const linesReducer = createReducer(linesInitialState, (builder) => {
       state.linesMap = {};
     })
     .addCase(clearUserData, (state) => {
+      state.user.activeLines = [];
       state.user.linePositions = {};
       state.user.lineAllowances = {};
     })
@@ -259,7 +262,23 @@ const linesReducer = createReducer(linesInitialState, (builder) => {
     .addCase(withdrawLine.rejected, (state, { error, meta }) => {
       const lineAddress = meta.arg.lineAddress;
       state.statusMap.user.linesActionsStatusMap[lineAddress].withdraw = { error: error.message };
-    });
+    })
+
+    /* -------------------------------- getCreditLineById ------------------------------- */
+    .addCase(getLCreditLineById.pending, (state) => {
+      state.statusMap.getLine = { loading: true };
+    })
+    .addCase(getLCreditLineById.fulfilled, (state, { payload: { id, creditLine } }) => {
+      state.statusMap.getLine = {};
+      if (creditLine) {
+        state.linesMap[id] = creditLine;
+      }
+
+    })
+    .addCase(getLCreditLineById.rejected, (state, { error }) => {
+      state.statusMap.getLine = { error: error.message };
+    })
+
 });
 
 // old yearn code

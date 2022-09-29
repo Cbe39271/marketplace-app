@@ -20,6 +20,12 @@ import {
   GetLineProps,
   GetLinesProps,
   GetLinePageProps,
+  LineStatusTypes,
+  UNINITIALIZED_STATUS,
+  ACTIVE_STATUS,
+  LIQUIDATABLE_STATUS,
+  REPAID_STATUS,
+  INSOLVENT_STATUS,
 } from '@types';
 import { getConfig } from '@config';
 import { LineOfCreditABI } from '@services/contracts';
@@ -62,24 +68,9 @@ export class CreditLineServiceImpl implements CreditLineService {
     return await this.web3Provider.getSigner().getAddress();
   }
 
-  public async getLine(props: GetLineProps): Promise<CreditLine | undefined> {
-    const result = await fetch(`${this.graphUrl}/subgraphs/`, {
-      // todo: URL
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: `
-          query {
-            Borrower {
-              id          
-            }
-            Lender {
-              id          
-            }
-        }`,
-      }),
-    });
-    return await result.json();
+  public async getCreditLineById(id: Address): Promise<CreditLine | void> {
+    return (await getLine({ id })
+      .then(queryResponse => <CreditLine>queryResponse.data))
   }
 
   public async addCredit(props: AddCreditProps, dryRun: boolean): Promise<TransactionResponse | PopulatedTransaction> {
@@ -114,7 +105,7 @@ export class CreditLineServiceImpl implements CreditLineService {
     return <TransactionResponse>await this.executeContractMethod('close', [id], false);
   }
 
-  public async withdraw(id: BytesLike, amount: BigNumber): Promise<TransactionResponse> {
+  public async withdraw(id: Bytes, amount: BigNumber): Promise<TransactionResponse> {
     return <TransactionResponse>await this.executeContractMethod('withdraw', [id, amount], false);
   }
 
@@ -136,14 +127,13 @@ export class CreditLineServiceImpl implements CreditLineService {
   }
 
   public async depositAndRepay(
-    id: BytesLike,
     amount: BigNumberish,
     dryRun: boolean
   ): Promise<TransactionResponse | PopulatedTransaction> {
     return await this.executeContractMethod('depositAndRepay', [amount], dryRun);
   }
 
-  public async depositAndClose(id: BytesLike, dryRun: boolean): Promise<TransactionResponse | PopulatedTransaction> {
+  public async depositAndClose(dryRun: boolean): Promise<TransactionResponse | PopulatedTransaction> {
     return await this.executeContractMethod('depositAndClose', [], dryRun);
   }
 
@@ -161,8 +151,7 @@ export class CreditLineServiceImpl implements CreditLineService {
         return await this.transactionService.populateTransaction(props);
       }
 
-      let tx;
-      tx = await this.transactionService.execute(props);
+      const tx = await this.transactionService.execute(props);
       await tx.wait();
       return tx;
     } catch (e) {
@@ -224,31 +213,51 @@ export class CreditLineServiceImpl implements CreditLineService {
     return signer === credit.lender || signer === (await this.contract.borrower());
   }
 
-  public async getLines(prop: GetLinesProps): Promise<CreditLine[] | undefined> {
-    return [];
+  public async getLinePage(prop: GetLinePageProps): Promise<CreditLinePage> {
+    return {};
   }
-  public async getLinePage(prop: GetLinePageProps): Promise<CreditLinePage | undefined> {
-    return;
+  public async getUserLinePositions(): Promise<any> {
+    return null;
   }
-  public async getUserLinePositions(): Promise<any | undefined> {
-    return;
+  public async getExpectedTransactionOutcome(): Promise<any> {
+    return null;
   }
-  public async getExpectedTransactionOutcome(): Promise<any | undefined> {
-    return;
-  }
-  public async approveDeposit(): Promise<any | undefined> {
-    return;
+  public async approveDeposit(): Promise<any> {
+    return null;
   }
   // public async approveZapOu:  () => Promise<any>t: {
-  //   return;
+  //   return null;
   // };
   // public async signPermi:  () => Promise<any>t: {
-  //   return;
+  //   return null;
   // };
-  public async getDepositAllowance(): Promise<any | undefined> {
-    return;
+  public async deposit(): Promise<any> {
+    return null;
   }
-  public async getWithdrawAllowance(): Promise<any | undefined> {
-    return;
+  public async withdraw(): Promise<any> {
+    return null;
+  }
+  public async getDepositAllowance(): Promise<any> {
+    return null;
+  }
+  public async getWithdrawAllowance(): Promise<any> {
+    return null;
+  }
+
+  public mapStatusToString(status: number): LineStatusTypes {
+    switch (status) {
+      case 0:
+        return UNINITIALIZED_STATUS;
+      case 2:
+        return ACTIVE_STATUS;
+      case 3:
+        return LIQUIDATABLE_STATUS;
+      case 4:
+        return REPAID_STATUS;
+      case 5:
+        return INSOLVENT_STATUS;
+      default:
+        return 'no status';
+    }
   }
 }

@@ -143,6 +143,12 @@ export interface InterestRateCreditService {
   accrueInterest: (props: InterestRateAccrueInterestProps) => Promise<BigNumber>;
 }
 
+export interface InterestRateAccrueInterestProps {
+  id: BytesLike;
+  drawnBalance: BigNumberish;
+  facilityBalance: BigNumberish;
+}
+
 export interface CreditLineService {
   // getters
   getLine: (props: GetLineProps) => Promise<CreditLine | undefined>;
@@ -150,6 +156,7 @@ export interface CreditLineService {
   getLinePage: (props: GetLinePageProps) => Promise<CreditLinePage | undefined>;
   getUserLinePositions: (...args: any) => Promise<any | undefined>;
   getExpectedTransactionOutcome: (...args: any) => Promise<any | undefined>;
+  getCreditLineById(id: Address): Promise<CreditLine | void>
 
   addCredit: (props: AddCreditProps, dryRun: boolean) => Promise<TransactionResponse | PopulatedTransaction>;
   close: (id: BytesLike) => Promise<TransactionResponse>;
@@ -188,17 +195,15 @@ export interface CreditLineService {
   approveDeposit: (...args: any) => Promise<any | undefined>;
   // approveZapOut: (...args: any) => Promise<any | undefined>;
   // signPermit: (...args: any) => Promise<any | undefined>;
+  deposit: (...args: any) => Promise<any>;
+  withdraw: (...args: any) => Promise<any>;
   getDepositAllowance: (...args: any) => Promise<any | undefined>;
   getWithdrawAllowance: (...args: any) => Promise<any | undefined>;
 }
 
-export interface InterestRateAccrueInterestProps {
-  id: BytesLike;
-  drawnBalance: BigNumberish;
-  facilityBalance: BigNumberish;
-}
-export interface GetLineProps {
-  params: GetLineArgs;
+export interface GetCreditLinesProps {
+  query: string;
+  params?: object;
   network: Network;
 }
 
@@ -211,6 +216,7 @@ export interface GetLinePageProps {
   params: GetLinePageArgs;
   network: Network;
 }
+
 export interface AddCreditProps {
   drate: BigNumberish;
   frate: BigNumberish;

@@ -19,8 +19,8 @@ import {
   WalletSelectors,
   AppSelectors,
   NetworkSelectors,
-  LinesActions,
-  LinesSelectors,
+  CreditLinesActions,
+  CreditLinesSelectors,
 } from '@store';
 import { device } from '@themes/default';
 import {
@@ -194,7 +194,7 @@ export const Market = () => {
   const opportunitiesLoading = generalLoading && !filteredVaults.length;
   const depositsLoading = generalLoading && !deposits.length;
   // TODO not neeed here
-  const addCreditStatus = useAppSelector(LinesSelectors.selectLinesActionsStatusMap);
+  const addCreditStatus = useAppSelector(CreditLinesSelectors.selectAddCreditStatus);
 
   const defaultLineCategories: UseCreditLinesParams = {
     // using i18m translation as keys for easy display
@@ -236,7 +236,7 @@ export const Market = () => {
       lender: '',
       line: '',
     };
-    dispatch(LinesActions.addCredit({ ...params }));
+    dispatch(CreditLinesActions.addCredit({ ...params }));
   };
 
   const depositHandler = (vaultAddress: string) => {

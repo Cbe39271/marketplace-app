@@ -3,6 +3,9 @@ import { BigNumber } from 'ethers';
 import { Address } from './Blockchain';
 import { Status } from './Status';
 
+// TODO
+// import { BigNumber } from '../frameworks/ethers';
+
 type UninitializedStatus = 'uninitialized';
 export const UNINITIALIZED_STATUS: UninitializedStatus = 'uninitialized';
 type ActiveStatus = 'active';
@@ -69,17 +72,17 @@ export interface CreditLinePage extends BaseCreditLine {
 
   // subgraph id -> depsoit/spigot
   activeIds: string[];
-  credits?: { [key: string]: LinePageCreditPosition };
+  credits: { [key: string]: LinePageCreditPosition };
   escrow?: { [key: string]: Escrow };
   spigot?: {
-    spigots?: { [key: string]: Spigot };
+    revenue: { [key: string]: number };
+    spigots: { [key: string]: Spigot };
   };
 
   collateralEvents: CollateralEvent[];
   creditEvents: CreditLineEvents[];
 }
 
-// TODO consolidate Credit and BaseCreditPosition and resolve type conflicts across codebase
 export interface BaseCreditPosition {
   id: string;
   lender: Address;
@@ -108,8 +111,9 @@ export interface LinePageCreditPosition extends BaseCreditPosition {
   drawnRate: number;
   token: {
     symbol: string;
-    lastPriceUSD?: number; // Can be live data or from subgraph
+    lastPriceUSD?: number; // Can be live data not from subgraph
   };
+  events?: CreditLineEvents[];
 }
 
 // bare minimum to display about a user on a position
@@ -197,6 +201,7 @@ export interface LinePageSpigot {
   startTime: string;
   active: boolean;
   // aggregate token revenue accross all spigots
+  revenue: { [key: string]: number };
   spigots?: RevenueContract[];
 }
 
@@ -302,5 +307,5 @@ export interface LineActionsStatusMap {
 
 export interface UserLineMetadataStatusMap {
   getUserLinePositions: Status;
-  linesActionsStatusMap: { [lineAddress: string]: LineActionsStatusMap };
+  linesActionsStatusMap: { [lineAddress: Address]: LineActionsStatusMap };
 }

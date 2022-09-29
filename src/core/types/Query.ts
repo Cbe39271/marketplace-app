@@ -1,4 +1,13 @@
-import { BaseCreditLine, CreditLinePage, BaseToken, Escrow, LinePageSpigot, LinePageCreditPosition } from '@types';
+import {
+  BaseCreditLine,
+  CreditLinePage,
+  BaseToken,
+  Escrow,
+  LinePageSpigot,
+  LinePageCreditPosition,
+  DocumentNode,
+  QueryResponse,
+} from '@types';
 
 import { Address } from './Blockchain';
 
@@ -14,6 +23,8 @@ export interface QueryResponse<ResponseType> {
   // make backwards compatible with Apollos response type
   [key: string]: any;
 }
+
+type QueryResponseTypes = BaseCreditLine | BaseCreditLine[] | CreditLinePage | CreditLine | undefined;
 
 /**
  * @typedef {object} Query

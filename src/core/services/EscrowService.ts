@@ -10,6 +10,7 @@ import {
   EscrowService,
 } from '@types';
 import { getConfig } from '@config';
+
 import { getContract } from '@frameworks/ethers';
 
 import { TransactionResponse } from '../types';
@@ -26,12 +27,12 @@ export class EscrowServiceImpl implements EscrowService {
   private readonly contractAddress: Address;
 
   constructor({
-    transactionService,
-    yearnSdk,
-    web3Provider,
-    config,
-    contractAddress,
-  }: {
+                transactionService,
+                yearnSdk,
+                web3Provider,
+                config,
+                contractAddress,
+              }: {
     transactionService: TransactionService;
     web3Provider: Web3Provider;
     yearnSdk: YearnSdk;
@@ -104,8 +105,7 @@ export class EscrowServiceImpl implements EscrowService {
         return await this.transactionService.populateTransaction(props);
       }
 
-      let tx;
-      tx = await this.transactionService.execute(props);
+      const tx = await this.transactionService.execute(props);
       await tx.wait();
       return tx;
     } catch (e) {

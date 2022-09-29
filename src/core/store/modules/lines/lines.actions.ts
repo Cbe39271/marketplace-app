@@ -348,7 +348,14 @@ const depositAndRepay = createAsyncThunk<
     // TODO: fix BigNumber type difference issues
     // const amountInWei = amount.multipliedBy(ONE_UNIT);
     // const { creditLineService, transactionService } = services;
-    // const tx = await creditLineService.depositAndRepay(userLineData.id, amount, false);
+    // const tx = await creditLineService.deposit({
+    //       network: network.current,
+    //       accountAddress: userAddress,
+    //       tokenAddress,
+    //       lineAddress,
+    //       amount: amountInWei.toString(),
+    //       slippageTolerance,
+    //     });
     // const notifyEnabled = app.servicesEnabled.notify;
     // await transactionService.handleTransaction({ tx, network: network.current, useExternalService: notifyEnabled });
     dispatch(getLinePage({ id: lineAddress }));
@@ -406,7 +413,15 @@ const withdrawLine = createAsyncThunk<
 
     // TODO: fix BigNumber type difference issues
     // const { creditLineService, transactionService } = services;
-    // const tx = await creditLineService.withdraw(userLineData.id, amountOfShares);
+    // const tx = await creditLineService.withdraw({
+    //       network: network.current,
+    //       accountAddress: userAddress,
+    //       tokenAddress: targetTokenAddress,
+    //       lineAddress,
+    //       amountOfShares,
+    //       slippageTolerance,
+    //       signature,
+    //     });
     // const notifyEnabled = app.servicesEnabled.notify;
     // await transactionService.handleTransaction({ tx, network: network.current, useExternalService: notifyEnabled });
     dispatch(getLinePage({ id: lineAddress }));
@@ -488,6 +503,14 @@ const getWithdrawAllowance = createAsyncThunk<
   return tokenAllowance;
 });
 
+const getLCreditLineById = createAsyncThunk<{ id: Address, creditLine: CreditLine | void }, Address, ThunkAPI>(
+  'lines/getById',
+  async (id, { extra }) => {
+    const { creditLineService } = extra.services;
+    return { id: id, creditLine: await creditLineService.getCreditLineById(id) }
+  }
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                Subscriptions                               */
 /* -------------------------------------------------------------------------- */
@@ -544,4 +567,5 @@ export const LinesActions = {
   clearLineStatus,
   getDepositAllowance,
   getWithdrawAllowance,
+  getLCreditLineById,
 };
